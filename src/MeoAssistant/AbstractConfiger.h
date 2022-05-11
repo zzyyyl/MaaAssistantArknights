@@ -7,6 +7,7 @@
 namespace json
 {
     class value;
+    class object;
 }
 
 namespace asst
