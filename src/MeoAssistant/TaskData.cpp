@@ -20,9 +20,9 @@ const std::shared_ptr<asst::TaskInfo> asst::TaskData::get(const std::string& nam
         if (name_split == 0) {
             return nullptr;
         }
-        if (auto alias_iter = m_all_tasks_info.find(std::string(name, name_split));
-            alias_iter != m_all_tasks_info.cend()) {
-            if (auto task_info_ptr = generate_task_info(alias_iter->second, std::string(name, 0, name_split));
+        if (auto ptr = get(std::string(name, name_split));
+            ptr != nullptr) {
+            if (auto task_info_ptr = generate_task_info(ptr, std::string(name, 0, name_split));
                 task_info_ptr != nullptr) {
                 m_all_tasks_info.emplace(name, task_info_ptr);
                 return task_info_ptr;
