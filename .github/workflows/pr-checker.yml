@@ -6,11 +6,15 @@ on:
 
 jobs:
   check_commit_name_in_pr:
-    if: github.head_ref == 'dev'
     runs-on: ubuntu-latest
 
     steps:
+      - name: Print Refs
+        run: |
+          echo head_ref: ${{ github.head_ref }}
+          echo base_ref: ${{ github.base_ref }}
       - name: Check Commits
+        if: github.head_ref == 'dev'
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
