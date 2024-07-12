@@ -215,7 +215,6 @@ int main([[maybe_unused]] int argc, char** argv)
                 resource_dir / "global" / out / "resource" / "recruitment.json",
                 false)) {
             std::cerr << "Update recruitment data failed" << std::endl;
-            return -1;
         }
         else {
             std::cout << "Done" << std::endl;
@@ -241,7 +240,6 @@ int main([[maybe_unused]] int argc, char** argv)
                 resource_dir / "global" / out / "resource",
                 false)) {
             std::cerr << "Update items json failed" << std::endl;
-            return -1;
         }
         else {
             std::cout << "Done" << std::endl;
@@ -257,7 +255,6 @@ int main([[maybe_unused]] int argc, char** argv)
                 official_data_dir / "gamedata" / "excel",
                 cur_path / in)) {
             std::cerr << "Update roguelike replace for overseas failed" << std::endl;
-            return -1;
         }
         else {
             std::cout << "Done" << std::endl;
@@ -281,7 +278,6 @@ int main([[maybe_unused]] int argc, char** argv)
                 overseas_data_dir / in / "gamedata" / "excel",
                 resource_dir / "global" / out / "resource")) {
             std::cerr << "Update version info failed" << std::endl;
-            return -1;
         }
         else {
             std::cout << "Done" << std::endl;
@@ -882,8 +878,7 @@ bool update_battle_chars_info(
     auto chars_kr_opt = json::open(overseas_dir / "ko_KR" / to_char_json);
     auto chars_tw_opt = json::open(overseas_dir / "zh_TW" / to_char_json);
 
-    if (!chars_cn_opt || !chars_en_opt || !chars_jp_opt || !chars_kr_opt || !chars_tw_opt
-        || !range_opt) {
+    if (!chars_cn_opt || !range_opt) {
         return false;
     }
 
@@ -891,11 +886,38 @@ bool update_battle_chars_info(
 
     std::vector<std::pair<json::value, std::string>> chars_json = {
         { chars_cn_opt.value(), "name" },
-        { chars_en_opt.value(), "name_en" },
-        { chars_jp_opt.value(), "name_jp" },
-        { chars_kr_opt.value(), "name_kr" },
-        { chars_tw_opt.value(), "name_tw" }
+        // { chars_en_opt.value(), "name_en" },
+        // { chars_jp_opt.value(), "name_jp" },
+        // { chars_kr_opt.value(), "name_kr" },
+        // { chars_tw_opt.value(), "name_tw" }
     };
+    if (chars_en_opt) {
+        chars_json.emplace_back(chars_en_opt.value(), "name_en");
+    }
+    else {
+        std::cerr << "en_US character_table.json not found" << std::endl;    
+    }
+
+    if (chars_jp_opt) {
+        chars_json.emplace_back(chars_jp_opt.value(), "name_jp");
+    }
+    else {
+        std::cerr << "ja_JP character_table.json not found" << std::endl;
+    }
+
+    if (chars_kr_opt) {
+        chars_json.emplace_back(chars_kr_opt.value(), "name_kr");
+    }
+    else {
+        std::cerr << "ko_KR character_table.json not found" << std::endl;
+    }
+
+    if (chars_tw_opt) {
+        chars_json.emplace_back(chars_tw_opt.value(), "name_tw");
+    }
+    else {
+        std::cerr << "zh_TW character_table.json not found" << std::endl;
+    }
 
     json::value result;
     auto& range = result["ranges"].as_object();
