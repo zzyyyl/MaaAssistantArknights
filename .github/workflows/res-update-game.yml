@@ -27,6 +27,21 @@ jobs:
         run: |
           echo $env:GITHUB_ACTOR
 
+      - name: Echo Authenticated User
+        id: user_info
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.MAA_RESOURCE_SYNC }}
+          script: |
+            const { data: user } = await github.rest.users.getAuthenticated();
+            const { data: public_email } = await github.rest.users.listPublicEmailsForAuthenticated();
+            const username = user.name;
+            const email = (public_email && public_email[0].email) || `${user.id}+${user.login}@users.noreply.github.com`
+            console.log(`username: ${username}`);
+            console.log(`email: ${email}`);
+            core.setOutput('username', username)
+            core.setOutput('email', email)
+
       - name: Checkout MAA
         uses: actions/checkout@v4
         with:
@@ -159,8 +174,8 @@ jobs:
         run: |
           git status
 
-          git config user.name "$env:GITHUB_ACTOR"
-          git config user.email "$env:GITHUB_ACTOR_ID+$env:GITHUB_ACTOR@users.noreply.github.com"
+          git config user.name "${{ steps.user_info.outputs.username }}"
+          git config user.email "${{ steps.user_info.outputs.email }}"
           git add .
 
           $commit_msg = "${{ github.event.inputs.commit_message }}"
