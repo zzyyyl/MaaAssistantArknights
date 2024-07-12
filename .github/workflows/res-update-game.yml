@@ -23,6 +23,10 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.MAA_RESOURCE_SYNC }}
     steps:
+      - name: Echo Actor
+        run: |
+          echo $env:GITHUB_ACTOR
+
       - name: Checkout MAA
         uses: actions/checkout@v4
         with:
