@@ -9,6 +9,12 @@ on:
         description: "Commit Message"
         type: string
         required: false
+  push:
+    branches:
+      - dev
+    paths:
+      - ".github/workflows/res-update-game.yml"
+      - "tools/ResourceUpdater/*"
 
 jobs:
   update-game-resources:
