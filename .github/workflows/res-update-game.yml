@@ -1,8 +1,8 @@
 name: res-update-game
 
 on:
-  schedule:
-    - cron: "*/20 * * * *"
+  # schedule:
+  #   - cron: "*/20 * * * *"
   workflow_dispatch:
     inputs:
       commit_message:
@@ -12,16 +12,16 @@ on:
 
 jobs:
   update-game-resources:
-    if: github.repository_owner == 'MaaAssistantArknights'
+    # if: github.repository_owner == 'MaaAssistantArknights'
     runs-on: windows-latest
     env:
-      GH_TOKEN: ${{ secrets.MISTEOWORKFLOW }}
+      GH_TOKEN: ${{ secrets.MAA_RESOURCE_SYNC }}
     steps:
       - name: Checkout MAA
         uses: actions/checkout@v4
         with:
           show-progress: false
-          token: ${{ secrets.MISTEOWORKFLOW }}
+          token: ${{ secrets.MAA_RESOURCE_SYNC }}
 
       - name: Bootstrap MaaDeps
         run: |
@@ -87,14 +87,14 @@ jobs:
             /ko_KR/gamedata/excel/activity_table.json
           sparse-checkout-cone-mode: false
 
-      - name: Clone arknights-toolbox-update for Taiwan
-        uses: actions/checkout@v4
-        with:
-          show-progress: false
-          repository: arkntools/arknights-toolbox-update
-          ref: data-tw
-          path: .\tools\ResourceUpdater\x64\Release\Overseas\zh_TW\gamedata\excel
-          token: ${{ secrets.ARKNTOOLS_MAA_RESOURCE_UPDATER}}
+      # - name: Clone arknights-toolbox-update for Taiwan
+      #   uses: actions/checkout@v4
+      #   with:
+      #     show-progress: false
+      #     repository: arkntools/arknights-toolbox-update
+      #     ref: data-tw
+      #     path: .\tools\ResourceUpdater\x64\Release\Overseas\zh_TW\gamedata\excel
+      #     token: ${{ secrets.ARKNTOOLS_MAA_RESOURCE_UPDATER}}
 
       - name: Run Resource Updater
         run: |
@@ -174,12 +174,12 @@ jobs:
         if: steps.add_files.outputs.have_commits == 'True'
         uses: ad-m/github-push-action@master
         with:
-          github_token: ${{ secrets.MISTEOWORKFLOW }}
+          github_token: ${{ secrets.MAA_RESOURCE_SYNC }}
 
-      - name: Update OTA resource
-        if: steps.add_files.outputs.have_commits == 'True'
-        run: |
-          gh workflow --repo MaaAssistantArknights/MaaRelease run update-resource.yml
+      # - name: Update OTA resource
+      #   if: steps.add_files.outputs.have_commits == 'True'
+      #   run: |
+      #     gh workflow --repo MaaAssistantArknights/MaaRelease run update-resource.yml
 
     #   - name: Release # ref: https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow
     #     if: steps.add_files.outputs.have_commits == 'True'
